@@ -17,5 +17,8 @@ int Selector;
     if(Selector == 2){
         RegistrarCliente();
     }
-    remove("Rececionistas.dat");
+    if(Selector == 3){
+        RegistrarTurno();
+    }
+    
 }

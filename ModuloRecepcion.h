@@ -12,6 +12,12 @@ struct Cliente{
     float Peso;
 };
 
+struct Turno{
+    int IdProfesional,DNICliente,AnioFecha,MesFecha,DiaFecha;
+    char DetalledeAtencion [380];
+};
+
+
 void IniciarSesion(){
     Usuarios Base;
     char UsuarioBase[10], ContraseniaBase[10];
@@ -82,6 +88,39 @@ void RegistrarCliente(){
     fflush(stdin);
 
     fwrite(&Base,sizeof(Cliente),1,Puntero);
+    Salida:
+    fclose(Puntero);
+}
+
+void RegistrarTurno(){
+    Turno Base;
+    FILE *Puntero = fopen ("Turnos.dat","a+b");
+    if (Puntero == NULL){
+        printf("No existe el archivo base, por favor creelo antes de entrar\n");
+        system("pause");
+        system("cls");
+        goto Salida;
+    }
+    printf("Ingerese el ID del profesional: ");
+    scanf("%d",&Base.IdProfesional);
+    fflush(stdin);
+    printf("Ingerese el anio de nacimiento del cliente: ");
+    scanf("%d",&Base.AnioFecha);
+    fflush(stdin);
+    printf("Ingerese el mes de nacimiento del cliente: ");
+    scanf("%d",&Base.MesFecha);
+    fflush(stdin);
+    printf("Ingerese el dia de nacimiento del cliente: ");
+    scanf("%d",&Base.DiaFecha);
+    fflush(stdin);
+    printf("Ingerese el DNI del cliente: ");
+    scanf("%d",&Base.DNICliente);
+    fflush(stdin);
+    printf("Ingerese los detalles de atencion que tiene con el cliente,tiene espacio para poder especificar lo que quiera, max 380 caracteres: ");
+    gets(Base.DetalledeAtencion);
+    fflush(stdin);
+
+    fwrite(&Base,sizeof(Turno),1,Puntero);
     Salida:
     fclose(Puntero);
 }
