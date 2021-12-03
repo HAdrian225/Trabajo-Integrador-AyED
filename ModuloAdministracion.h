@@ -1,5 +1,14 @@
+
+struct profesionales{
+        char apenom[60];
+        int id;
+        int dni;
+        char phone[25];
+};
+
 void registrar(FILE *p){
-        profesionales reg;
+        
+		profesionales reg;
 
         printf("\nCREAR CUENTA DE PROFESIONAL\n-----------------------------------\n");
         printf("Apellido y nombre: ");
