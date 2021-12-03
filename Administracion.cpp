@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "ModuloAdministracion.h"
+
 
 
 main(){
@@ -19,7 +21,12 @@ main(){
                         system("cls");
                         break;
 
-
+				case 2: p=fopen("Usuarios.dat","a+b");
+						registrar2(p);
+						fclose(p);
+						system("pause");
+                        system("cls");
+                        break;
 
                 case 5: break;
                         
