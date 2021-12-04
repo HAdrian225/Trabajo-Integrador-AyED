@@ -4,11 +4,12 @@
 #include <ctype.h>
 #include "ModuloAdministracion.h"
 
-
+typedef char cadena[11];
 
 main(){
     FILE *p;
-    int x;
+    int x,i;
+    cadena nomuser[50];
 
     do{ 
         printf("Modulo Administracion\n==========================\n1.- Registrar Profesional\n2.- Registrar Usuario Recepcionista\n3.- Atenciones por Profesional\n4.- Ranking de Profesionales por Atenciones\n5.- Cerrar la aplicacion.\nIngrese una opcion: ");
@@ -21,8 +22,18 @@ main(){
                         system("cls");
                         break;
 
-				case 2: p=fopen("Usuarios.dat","a+b");
-						registrar2(p);
+				case 2: p=fopen("Usuarios.dat","rb");
+						if(p==NULL){
+							printf("Es el primer usuario a registrar\n");
+						}else{
+							transferir(p,nomuser,i);
+                        	fclose(p);
+                        	printf("Cantidad de usuarios registrados: %d\n",i);
+                        	
+                        }
+                        p=fopen("Usuarios.dat","a+b");
+                        transferir(p,nomuser,i);
+						registrar2(p,nomuser,i);
 						fclose(p);
 						system("pause");
                         system("cls");

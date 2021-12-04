@@ -6,6 +6,28 @@ struct profesionales{
         char phone[25];
 };
 
+struct usuarios{
+	char user[11];
+	char passw[32];
+	char apenom[60];
+};
+
+typedef char cadena[11];
+
+
+void transferir(FILE *p,cadena nomuser[50],int &i){
+        i=0;
+        usuarios reg[50];
+        fread(&reg[i],sizeof(usuarios),1,p);
+        strcpy(nomuser[i],reg[i].user);
+        while(!feof(p)){
+            i++;
+            fread(&reg[i],sizeof(usuarios),1,p);
+            strcpy(nomuser[i],reg[i].user);
+        }
+
+}
+
 void registrar(FILE *p){
         
 		profesionales reg;
@@ -25,29 +47,35 @@ void registrar(FILE *p){
         
 }
 
-struct usuarios{
-	char user[11];
-	char passw[32];
-	char apenom[60];
-};
 
 
-void registrar2(FILE *p){
-	int cDigit=0,cMayus=0,cMin;
+
+void registrar2(FILE *p,cadena nomuser[50],int r){
+	int cDigit=0,cMayus=0,cMin,user=0;
 	usuarios reg;
 	int cPunt=0,cConsAlpha=0,cConsDigit=0;
 	char contraux[32];
-	
+
 	printf("\nCREACION DE USUARIO PARA RECEPCION\n------------------------------\n");
 	printf("Nombre de usuario\nDebera cumplir los siguientes requisitos\n1. Ser unico para cada usuario registrado.\n2. Comenzar con una letra minuscula.\n3. Tener al menos 2 letras mayusculas.\n4. Tener como maximo 3 digitos.\n");
 	do{
 		cDigit=0;
 		cMayus=0;
 		cMin=0;
+		user=0;
 		printf("Ingrese el nombre de usuario: ");
 		_flushall();
 		gets(reg.user);
 		
+		for(int m=0;m<=r;m++){
+			if(strcmp(nomuser[m],reg.user)==0){
+				user++;
+				printf("El nombre de usuario no debe ser igual a uno anteriormente registrado\n");
+			}
+
+		}
+
+
 		if(strlen(reg.user)<6 or strlen(reg.user)>10){
 			printf("El nombre debe ser entre 6 y 10 caracteres\n");
 		}
@@ -77,10 +105,10 @@ void registrar2(FILE *p){
 		system("pause");
 		system("cls");
 		
-	}while(strlen(reg.user)<6 or strlen(reg.user)>10 or cMin==0 or cDigit>3 or cMayus<2);
+	}while(strlen(reg.user)<6 or strlen(reg.user)>10 or cMin==0 or cDigit>3 or cMayus<2 or user!=0);
 	
 	printf("\nCREACION DE USUARIO PARA RECEPCION\n------------------------------\n");
-	printf("Contrasena\nDenera respetar lo siguiente:\n1. Debera contener al menos una letra mayuscula, una letra minuscula y un numero.\n2. No podra contener ningun caracter de puntuacion, ni acentos, ni espacios. Solo caracteres alfanumericos.\n3. Debera tener entre 6 y 32 caracteres.\n4. No debe tener mas de 3 caracteres numericos consecutivos.\n5. No debe tener 2 caracteres consecutivos que refieran a letras alfabeticamente consecutivas (ascendentemente). Este criterio es valido tanto para letras mayusculas, minusculas o combinación de ambas\n");
+	printf("Contrasena\nDenera respetar lo siguiente:\n1. Debera contener al menos una letra mayuscula, una letra minuscula y un numero.\n2. No podra contener ningun caracter de puntuacion, ni acentos, ni espacios. Solo caracteres alfanumericos.\n3. Debera tener entre 6 y 32 caracteres.\n4. No debe tener mas de 3 caracteres numericos consecutivos.\n5. No debe tener 2 caracteres consecutivos que refieran a letras alfabeticamente consecutivas (ascendentemente). Este criterio es valido tanto para letras mayusculas, minusculas o combinaciï¿½n de ambas\n");
 	do{
 		cDigit=0;
 		cMayus=0;
@@ -94,7 +122,7 @@ void registrar2(FILE *p){
 		gets(reg.passw);
 		
 		if(strlen(reg.passw)<6 or strlen(reg.passw)>32){
-			printf("La contraseña debe ser entre 6 y 32 caracteres\n");
+			printf("La contraseï¿½a debe ser entre 6 y 32 caracteres\n");
 		}
 		
 		for(int i=0;i<strlen(reg.passw);i++){
