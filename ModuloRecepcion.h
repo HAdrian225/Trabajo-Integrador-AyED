@@ -4,7 +4,7 @@
 #include<Windows.h>
 
 struct Usuarios{
-    char Usuario [10], Contrasenia [10], ApellidoyNombre[60];
+    char Usuario [11], Contrasenia [32], ApellidoyNombre[60];
 };
 
 struct Cliente{
@@ -22,8 +22,12 @@ struct Turno{
 void IniciarSesion(){
     Usuarios Base;
     bool Validador = true;
-    int ContadorDeFallos = 0,Segundos, Veces = 1;
+    int ContadorDeFallos = 0,Segundos, Veces = 1, Exit;
     char UsuarioBase[10], ContraseniaBase[10];
+
+//------------------------------------------Ingreso de Datos------------------------------------------------//
+    Ingreso:
+
     printf("Ingrese el usuario:\n");
     gets(UsuarioBase);
     _flushall();
@@ -31,6 +35,8 @@ void IniciarSesion(){
     gets(ContraseniaBase);
     _flushall();
     fflush(stdin);
+
+//----------------------------------------Verificacion de existencia de Archivo  -------------------//
     FILE *Puntero = fopen ("Usuarios.dat","rb");
     if (Puntero == NULL){
         printf("No existe el archivo base, por favor creelo antes de entrar\n");
@@ -38,30 +44,45 @@ void IniciarSesion(){
         system("pause");
         system("cls");
     }
-    
-    while (!feof(Puntero)){
+
+//--------------------------------Verificacion de Datos--------------------------------------//
+    do{
         fread (&Base,sizeof(Usuarios),1,Puntero);
         if (strcmp(UsuarioBase, Base.Usuario)== 0){
             if (strcmp(ContraseniaBase,Base.Contrasenia)== 0){
-                printf ("Contrasenia valida\nIngreso completado\nBienvenido %s",Base.ApellidoyNombre);
+                printf ("Contrasenia valida\nIngreso completado\nBienvenido %s\n",Base.ApellidoyNombre);
                 Validador = false;
                 system("pause");
-                break;
+                goto Salida;
+            }else {
+                ContadorDeFallos++;
+                goto Fallo;
             }
+        }else {
+            ContadorDeFallos++;
+            goto Fallo;
         }
-    }
+    }while (!feof(Puntero));
+    
+//--------En caso de fallar se le dara otros intentos, en caso de ser 3 intentos o mas habra un tiempo de penalizacion------------//
+    Fallo :
     if ( (ContadorDeFallos % 3) == 0){
         Segundos = 30 * Veces;
         while (Segundos != 0){
-            Segundos --;
+            printf("Usted a fallado %d veces, por lo tanto tiene que esperar %d segundos",ContadorDeFallos,Segundos);
             Sleep(1000);
+            system("cls");
+            Segundos --;
         }
-        
+        Veces++;
     }
 
     if (Validador){
-        printf("El usuario o la contraseña no son correctas, por favor intente de nuevo\n");
-        ContadorDeFallos ++;
+        printf("El usuario o la contrasenia no son correctas, por favor intente de nuevo\nEn caso de que quiera salir ingrese 1: ");
+        scanf("%d",&Exit);
+        fflush(stdin);
+        if (Exit == 1) goto Salida;
+        goto Ingreso;
     }
     Salida:
     fclose(Puntero);

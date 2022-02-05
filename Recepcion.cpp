@@ -6,7 +6,6 @@
 int main (){
     int Selector;
     bool Salida = true;
-    fclose(Abredor);
     while (Salida){
         printf("Ingrese 1:");
         scanf("%d",&Selector);
