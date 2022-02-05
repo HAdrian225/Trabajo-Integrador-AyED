@@ -31,7 +31,7 @@ void IniciarSesion(){
     gets(ContraseniaBase);
     _flushall();
     fflush(stdin);
-    FILE *Puntero = fopen ("Recepcionistas.dat","rb");
+    FILE *Puntero = fopen ("Usuarios.dat","rb");
     if (Puntero == NULL){
         printf("No existe el archivo base, por favor creelo antes de entrar\n");
         goto Salida;

@@ -5,9 +5,7 @@
 
 int main (){
     int Selector;
-    FILE *Abredor;
     bool Salida = true;
-    Abredor = fopen("Recepcionistas.dat","w+b");
     fclose(Abredor);
     while (Salida){
         printf("Ingrese 1:");
