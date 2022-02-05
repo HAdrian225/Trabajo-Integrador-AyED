@@ -27,7 +27,7 @@ struct Cliente
 	char localidad[60];
 	Fecha fechanacimiento;
 	float Peso;
-	int Telefono;
+	char Telefono [25];
 };
 
 struct Turnos
