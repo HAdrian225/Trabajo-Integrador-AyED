@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<Windows.h>
 
 struct Usuarios{
     char Usuario [10], Contrasenia [10], ApellidoyNombre[60];
@@ -20,6 +21,8 @@ struct Turno{
 
 void IniciarSesion(){
     Usuarios Base;
+    bool Validador = true;
+    int ContadorDeFallos = 0,Segundos, Veces = 1;
     char UsuarioBase[10], ContraseniaBase[10];
     printf("Ingrese el usuario:\n");
     gets(UsuarioBase);
@@ -41,10 +44,24 @@ void IniciarSesion(){
         if (strcmp(UsuarioBase, Base.Usuario)== 0){
             if (strcmp(ContraseniaBase,Base.Contrasenia)== 0){
                 printf ("Contrasenia valida\nIngreso completado\nBienvenido %s",Base.ApellidoyNombre);
+                Validador = false;
                 system("pause");
                 break;
             }
         }
+    }
+    if ( (ContadorDeFallos % 3) == 0){
+        Segundos = 30 * Veces;
+        while (Segundos != 0){
+            Segundos --;
+            Sleep(1000);
+        }
+        
+    }
+
+    if (Validador){
+        printf("El usuario o la contraseña no son correctas, por favor intente de nuevo\n");
+        ContadorDeFallos ++;
     }
     Salida:
     fclose(Puntero);

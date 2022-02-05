@@ -4,21 +4,31 @@
 #include"ModuloRecepcion.h"
 
 int main (){
-int Selector;
+    int Selector;
     FILE *Abredor;
+    bool Salida = true;
     Abredor = fopen("Recepcionistas.dat","w+b");
     fclose(Abredor);
-    printf("Ingrese 1:");
-    scanf("%d",&Selector);
-    fflush(stdin);
-    if (Selector== 1){
-        IniciarSesion();
+    while (Salida){
+        printf("Ingrese 1:");
+        scanf("%d",&Selector);
+        fflush(stdin);
+        switch (Selector){
+        case 1:
+            IniciarSesion();
+            break;
+        case 2:
+            RegistrarCliente();
+            break;
+        case 3:
+            RegistrarTurno();
+            break;
+        default:
+            Salida = false;
+            break;
+        }
+
     }
-    if(Selector == 2){
-        RegistrarCliente();
-    }
-    if(Selector == 3){
-        RegistrarTurno();
-    }
-    
+    system ("pause");
+    return 0;
 }
