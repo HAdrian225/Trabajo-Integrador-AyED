@@ -16,7 +16,7 @@ struct Profesionales
 	char ApellidoNombre[60];
 	int IdProfesional;
 	int DNI;
-	int Telefono;
+	char Telefono[25];
 };
 
 struct Cliente
@@ -42,7 +42,7 @@ struct Turnos
 
 struct CuentasDeUsuarios
 {
-	char user[10];
+	char user[11];
 	char password [32];
 	char ApellidoNombre[60];
 };
@@ -105,11 +105,11 @@ void InicioDeSesion(int &bandera)
 {
 	system("cls");
 	
-	char nameuser[10], passuser[32], usuario[30]; 
+	char nameuser[10], passuser[32], usuario[60]; 
 	FILE *arch2;int clavecorrecta, usuariocorrecto;
 	CuentasDeUsuarios usu;
 	
-	arch2=fopen("Recepcionistas.dat","a+b");
+	arch2=fopen("Usuarios.dat","r+b");
 	
 	if(arch2==NULL)
 	{
@@ -126,12 +126,12 @@ void InicioDeSesion(int &bandera)
 		bandera=0;
 		fread(&usu,sizeof(CuentasDeUsuarios),1,arch2);
 		
-		while(!feof(arch2))
+		while(!feof(arch2) and bandera==0)
 		{
 			usuariocorrecto=strcmp(nameuser, usu.user);
 			clavecorrecta=strcmp(passuser, usu.password);
 			
-			if(clavecorrecta==0&&usuariocorrecto==0)
+			if(clavecorrecta==0 && usuariocorrecto==0)
 			{
 				strcpy(usuario,usu.ApellidoNombre);
 				bandera=1;
@@ -180,7 +180,7 @@ void Listadeespera(int bandera)
 	arch3=fopen("Turnos.dat","rb");
 	
 	//--------------------------------Verificacion de Archivos--------------------------------------///	
-	if(arch3==NULL|| arch4==NULL)
+	if(arch3==NULL || arch4==NULL)
 	{
 		printf("\nError en el programa, Archivos no cargados");
 	}
