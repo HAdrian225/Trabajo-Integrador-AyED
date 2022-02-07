@@ -23,6 +23,12 @@ struct usuarios{
 	char apenom[60];
 };
 
+struct rank{
+	int id;
+	char name[60];
+	int cant;
+};
+
 typedef char cadena[11];
 
 
@@ -236,3 +242,68 @@ void mostrarAtenciones(FILE *p,FILE *q){
 	
 	}
 }
+
+void rankingProf(FILE *p,FILE *q){
+	
+	rank profeNum[100],aux_reg;
+	int cant=0,i=0;
+	int n,b=1;
+	profesionales prof;	
+	turno turn;
+	
+	fread(prof,sizeof(profesionales),1,q);
+
+	while(!feof(q)){
+		
+		profeNum[i].id=prof.id;
+		strcpy(profeNum[i].name,prof.apenom);
+		
+		fread(turn,sizeof(turno),1,p);
+		if(turn.IdProfesional==prof.id){
+			cant++;
+		}
+		
+		while(!feof(p)){
+			
+			fread(turn,sizeof(turno),1,p);
+			if(turn.IdProfesional==prof.id){
+				cant++;
+			}	
+		}
+		
+		profeNum[i].cant=cant;
+		
+		i++;
+		cant=0;
+		rewind(p);
+		
+		fread(prof,sizeof(profesionales),1,q);
+		
+	}
+	
+	n=i;
+	
+	//ordenar el array de registro
+	
+	while(b!=0){
+		b=0;
+		
+		for(int i=0;i<n-1;i++){
+			if(profeNum[i].cant<profeNum[i+1]){
+				aux_reg=profeNum[i];
+				profeNum[i]=profeNum[i+1];
+				profeNum[i+1]=profeNum[i];
+				b=1;
+			}	
+		}	
+	}
+	
+	//imprime array en pantalla
+	printf("\nRanking:\n\t");
+	for(int j=0;j<n;j++){
+		printf("%d.Nombre y apellido: %s\n\tID: %d\n\tCantidad de pacientes atendidos: %d\n",j,profeNum[j].name,profeNum[j].id,profeNum[j].cant);
+		
+	}
+	
+}
+
