@@ -5,7 +5,7 @@ struct fecha{
 };
 
 struct turno{
-    int IdProfesional,DNICliente,Atendido;
+    int IdProfesional,DNICliente,Atendido,edadCliente;
     fecha fec;
     char DetalledeAtencion [380];
 };
@@ -211,22 +211,22 @@ void mostrarAtenciones(FILE *p,FILE *q){
 	profesionales prof;
 	turno turn;
 	
-	fread(prof,sizeof(profesionales),1,q);
+	fread(&prof,sizeof(profesionales),1,q);
 	id=prof.id;
 	
 	while(!feof(q)){
 	
 	
-		fread(turn,sizeof(turno),1,p);
-		if(turn.IdProfesional==id){
+		fread(&turn,sizeof(turno),1,p);
+		if(turn.IdProfesional==id and turn.Atendido==1){
 			cant++;
 		
 		}
 	
 		while(!feof(p)){
 		
-			fread(turn,sizeof(turno),1,p);
-			if(turn.IdProfesional==id){
+			fread(&turn,sizeof(turno),1,p);
+			if(turn.IdProfesional==id and turn.Atendido==1){
 				cant++;
 			
 			}
@@ -237,7 +237,7 @@ void mostrarAtenciones(FILE *p,FILE *q){
 		rewind(p);
 		cant=0;
 		
-		fread(prof,sizeof(profesionales),1,q);
+		fread(&prof,sizeof(profesionales),1,q);
 		id=prof.id;
 	
 	}
@@ -251,22 +251,22 @@ void rankingProf(FILE *p,FILE *q){
 	profesionales prof;	
 	turno turn;
 	
-	fread(prof,sizeof(profesionales),1,q);
+	fread(&prof,sizeof(profesionales),1,q);
 
 	while(!feof(q)){
 		
 		profeNum[i].id=prof.id;
 		strcpy(profeNum[i].name,prof.apenom);
 		
-		fread(turn,sizeof(turno),1,p);
-		if(turn.IdProfesional==prof.id){
+		fread(&turn,sizeof(turno),1,p);
+		if(turn.IdProfesional==prof.id and turn.Atendido==1){
 			cant++;
 		}
 		
 		while(!feof(p)){
 			
-			fread(turn,sizeof(turno),1,p);
-			if(turn.IdProfesional==prof.id){
+			fread(&turn,sizeof(turno),1,p);
+			if(turn.IdProfesional==prof.id and turn.Atendido==1){
 				cant++;
 			}	
 		}
@@ -277,7 +277,7 @@ void rankingProf(FILE *p,FILE *q){
 		cant=0;
 		rewind(p);
 		
-		fread(prof,sizeof(profesionales),1,q);
+		fread(&prof,sizeof(profesionales),1,q);
 		
 	}
 	
@@ -289,7 +289,7 @@ void rankingProf(FILE *p,FILE *q){
 		b=0;
 		
 		for(int i=0;i<n-1;i++){
-			if(profeNum[i].cant<profeNum[i+1]){
+			if(profeNum[i].cant<profeNum[i+1].cant){
 				aux_reg=profeNum[i];
 				profeNum[i]=profeNum[i+1];
 				profeNum[i+1]=profeNum[i];

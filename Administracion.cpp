@@ -8,7 +8,7 @@ typedef char cadena[11];
 
 
 main(){
-    FILE *p;
+    FILE *p,*q;
     int x,i;
     cadena nomuser[50];
 
@@ -40,7 +40,7 @@ main(){
                         system("cls");
                         break;
                 case 3: p=fopen("Turnos.dat","rb");
-                		q=fopem("Profesionales.dat","rb");
+                		q=fopen("Profesionales.dat","rb");
                 		if(p==NULL){
                 			printf("\nNo se han registrado turnos\n");
                 		}else{
@@ -54,7 +54,7 @@ main(){
                         break;
             	
             	case 4:	p=fopen("Turnos.dat","rb");
-                		q=fopem("Profesionales.dat","rb");
+                		q=fopen("Profesionales.dat","rb");
                 		if(p==NULL){
                 			printf("\nNo se han registrado turnos\n");
                 		}else{
