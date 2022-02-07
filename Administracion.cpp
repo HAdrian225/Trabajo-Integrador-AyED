@@ -6,6 +6,10 @@
 
 typedef char cadena[11];
 
+
+
+
+
 main(){
     FILE *p;
     int x,i;
@@ -38,7 +42,20 @@ main(){
 						system("pause");
                         system("cls");
                         break;
-
+                case 3: p=fopen("Turnos.dat","rb");
+                		q=fopem("Profesionales.dat","rb");
+                		if(p==NULL){
+                			printf("\nNo se han registrado turnos\n");
+                		}else{
+                		mostrarAtenciones(p,q);
+                			
+                		}
+                		fclose(p);
+                		fclose(q);
+						system("pause");
+                        system("cls");
+                        break;
+                        
                 case 5: break;
                         
         }  

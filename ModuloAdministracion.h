@@ -1,3 +1,14 @@
+struct fecha{
+	int dia;
+	int mes;
+	int anio;
+};
+
+struct turno{
+    int IdProfesional,DNICliente,Atendido;
+    fecha fec;
+    char DetalledeAtencion [380];
+};
 
 struct profesionales{
         char apenom[60];
@@ -187,3 +198,41 @@ void registrar2(FILE *p,cadena nomuser[50],int r){
 	fwrite(&reg,sizeof(usuarios),1,p);
 }
 
+
+void mostrarAtenciones(FILE *p,FILE *q){
+	
+	int id,cant=0;
+	profesionales prof;
+	turno turn;
+	
+	fread(prof,sizeof(profesionales),1,q);
+	id=prof.id;
+	
+	while(!feof(q)){
+	
+	
+		fread(turn,sizeof(turno),1,p);
+		if(turn.IdProfesional==id){
+			cant++;
+		
+		}
+	
+		while(!feof(p)){
+		
+			fread(turn,sizeof(turno),1,p);
+			if(turn.IdProfesional==id){
+				cant++;
+			
+			}
+		}
+	
+		printf("\nProfesional %d: %d pacientes atendidos\n",id,cant);
+		
+		rewind(p);
+		cant=0;
+		
+		fread(prof,sizeof(profesionales),1,q);
+		id=prof.id;
+	
+	}
+}
