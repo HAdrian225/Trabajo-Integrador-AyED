@@ -2,6 +2,9 @@
 #include<stdlib.h>
 #include<string.h>
 #include<Windows.h>
+struct Fecha{
+    int Anio,Mes,Dia;
+}
 
 struct Usuarios{
     char Usuario [11], Contrasenia [32], ApellidoyNombre[60];
@@ -9,12 +12,14 @@ struct Usuarios{
 
 struct Cliente{
     char ApellidoyNombre[60],Domicilio[60],Localidad[60],Telefono[25];
-    int DNICliente,AnioFecha,MesFecha,DiaFecha;
+    int DNICliente;
+    Fecha FechaCliente;
     float Peso;
 };
 
 struct Turno{
-    int IdProfesional,DNICliente,AnioFecha,MesFecha,DiaFecha,Atendido;
+    int IdProfesional,DNICliente,Atendido;
+    Fecha FechaTurno;
     char DetalledeAtencion [380];
 };
 
@@ -37,7 +42,7 @@ void IniciarSesion(){
     fflush(stdin);
 
 //----------------------------------------Verificacion de existencia de Archivo  -------------------//
-    FILE *Puntero = fopen ("Usuarios.dat","rb");
+    FILE *Puntero = fopen ("Clientes.dat","rb");
     if (Puntero == NULL){
         printf("No existe el archivo base, por favor creelo antes de entrar\n");
         goto Salida;
@@ -119,15 +124,15 @@ void RegistrarCliente(){
     fflush(stdin);
 
     printf("Ingerese el anio de nacimiento del nuevo cliente: ");
-    scanf("%d",&Base.AnioFecha);
+    scanf("%d",&Base.FechaCliente.Anio);
     fflush(stdin);
 
     printf("Ingerese el mes de nacimiento del nuevo cliente: ");
-    scanf("%d",&Base.MesFecha);
+    scanf("%d",&Base.FechaCliente.Mes);
     fflush(stdin);
 
     printf("Ingerese el dia de nacimiento del nuevo cliente: ");
-    scanf("%d",&Base.DiaFecha);
+    scanf("%d",&Base.FechaCliente.Dia);
     fflush(stdin);
 
     printf("Ingerese el peso del nuevo cliente: ");
@@ -164,15 +169,15 @@ void RegistrarTurno(){
     fflush(stdin);
 
     printf("Ingerese el anio de nacimiento del cliente: ");
-    scanf("%d",&Base.AnioFecha);
+    scanf("%d",&Base.FechaTurno.Anio);
     fflush(stdin);
 
     printf("Ingerese el mes de nacimiento del cliente: ");
-    scanf("%d",&Base.MesFecha);
+    scanf("%d",&Base.FechaTurno.Mes);
     fflush(stdin);
 
     printf("Ingerese el dia de nacimiento del cliente: ");
-    scanf("%d",&Base.DiaFecha);
+    scanf("%d",&Base.FechaTurno.Dia);
     fflush(stdin);
 
     printf("Ingerese el DNI del cliente: ");
