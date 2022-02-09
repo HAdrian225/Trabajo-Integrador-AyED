@@ -3,7 +3,6 @@
 #include<string.h>
 #include<windows.h>
 
-
 struct Fecha
 {
   int dia;
@@ -16,7 +15,7 @@ struct Profesionales
 	char ApellidoNombre[60];
 	int IdProfesional;
 	int DNI;
-	char Telefono[25];
+	char phone[25];
 };
 
 struct Cliente
@@ -27,7 +26,7 @@ struct Cliente
 	char localidad[60];
 	Fecha fechanacimiento;
 	float Peso;
-	char Telefono [25];
+	int Telefono;
 };
 
 struct Turnos
@@ -35,7 +34,6 @@ struct Turnos
 	int IdProfesional;
 	Fecha fecha;
 	int dniCliente;
-	int edadCliente;
 	char DetalleAtencion[380];
 	int fueatendido; //-1) si -2) no
 };
@@ -48,21 +46,21 @@ struct CuentasDeUsuarios
 };
 
 void RegistroEvolucionCliente(int bandera);
-void Listadeespera(int bandera);
-void InicioDeSesion(int &bandera);
+void Listadeespera(int bandera,int &ID);
+void InicioDeSesion(int &bandera,int &ID);
 int menu();
 
 main()
-{	
-	int opcionmenu, bandera=0;
+{	int ID;
+	int x, bandera=0;
 	do{
-		opcionmenu=menu();
-		switch(opcionmenu)
+		x=menu();
+		switch(x)
 		{
-			case 1: InicioDeSesion(bandera);
+			case 1: InicioDeSesion(bandera,ID);
 			break;
 			
-			case 2: Listadeespera(bandera);
+			case 2: Listadeespera(bandera,ID);
 			break;
 			
 			case 3: RegistroEvolucionCliente(bandera);
@@ -74,21 +72,14 @@ main()
 			default: printf("***LA OPCION NO ES VALIDA***\n\n");
 			break;
 		}
-   }while(opcionmenu!=4);
+   }while(x!=4);
 	
 }
-/*void gotoxy(int x, int y){
-	HANDLE hcon=GetStdHandle(STD_OUTPUT_HANDLE);
-	COORD dwPos;
-	dwPos.X= x;
-	dwPos.Y=y;
-	SetConsoleCursorPosition(hcon, dwPos);
-}*/
 
 int menu()
 {      
     system("cls");
-	int opc;
+	int n;
 	printf("------------------------------------");
 	 printf("\n\n\tModulo Espacios \n\n");
 	 printf("------------------------------------");
@@ -97,19 +88,20 @@ int menu()
 	 printf("\n\n3)Registrar evolucion del Cliente");
 	 printf("\n\n4)Cerrar la aplicacion");
 	 printf("\n\nIngrese Opcion: ");
-	scanf("%d",&opc);
-	return(opc);
+	scanf("%d",&n);
+	return(n);
 }
 
-void InicioDeSesion(int &bandera)
+void InicioDeSesion(int &bandera,int &ID)
 {
 	system("cls");
 	
-	char nameuser[10], passuser[32], usuario[60]; 
+	char apenom[60];
+	int id; 
 	FILE *arch2;int clavecorrecta, usuariocorrecto;
-	CuentasDeUsuarios usu;
+	Profesionales usu;
 	
-	arch2=fopen("Usuarios.dat","r+b");
+	arch2=fopen("Profesionales.dat","rb");
 	
 	if(arch2==NULL)
 	{
@@ -117,39 +109,38 @@ void InicioDeSesion(int &bandera)
 	}
 	else
 	{
-		printf("\nIngrese nombre de usuario: ");
+		printf("\nIngrese nombre y apellido: ");
 		_flushall();
-		gets(nameuser);
-		printf("\nClave de usuario: ");
-		_flushall();
-		gets(passuser);
+		gets(apenom);
+		printf("\nIngrese la ID: ");
+		scanf("%d",&id);
 		bandera=0;
-		fread(&usu,sizeof(CuentasDeUsuarios),1,arch2);
+		fread(&usu,sizeof(Profesionales),1,arch2);
 		
-		while(!feof(arch2) and bandera==0)
+		while(!feof(arch2))
 		{
-			usuariocorrecto=strcmp(nameuser, usu.user);
-			clavecorrecta=strcmp(passuser, usu.password);
+			usuariocorrecto=strcmp(apenom, usu.ApellidoNombre);
+			clavecorrecta=id-usu.IdProfesional;
 			
 			if(clavecorrecta==0 && usuariocorrecto==0)
-			{
-				strcpy(usuario,usu.ApellidoNombre);
+			{	
+				ID=id;
 				bandera=1;
+				goto salida;
 			}
 			
-			fread(&usu,sizeof(CuentasDeUsuarios),1,arch2);	
+			fread(&usu,sizeof(Profesionales),1,arch2);	
 		}
 		
+		salida:
 		if(bandera==1)
 		{
-			strcat(usuario," !");
+			strcat(apenom," !");
 			printf("\n                                                    ");
 			printf("\n                                                    ");
-			printf("\nBienvenido/a: ");
-			puts(usuario);
-			system("pause");
-			printf("\n                                                     ");
-			printf("\n                                                     ");
+			printf("\nBienvenido/a: %s\n",apenom);
+			printf("\n");
+			printf("\n");
 		}
 		
 		if(bandera==0)
@@ -168,7 +159,7 @@ void InicioDeSesion(int &bandera)
 	
 }
 
-void Listadeespera(int bandera)
+void Listadeespera(int bandera,int &ID)
 {
 	system("cls");
 	 
@@ -195,9 +186,9 @@ void Listadeespera(int bandera)
 	else
 	{//--------------------------------Solicitud de los datos--------------------------------------	
 	
-		printf("\nIngrese su ID por favor: ") ;scanf("%d",&IdProfesional);
-		printf("  \n                                                         ");
-		printf("\nFecha: ");	
+		
+		printf("  \n");
+		printf("\nIngrese la fecha del turno: ");	
 		printf("\nDia: ");
 			scanf("%d",&Dia);
 		printf("\nMes: ");
@@ -207,25 +198,14 @@ void Listadeespera(int bandera)
 		 
 		//--------------------------------Verificacion de los datos en los archivos--------------------------------------///	
 		hayturnos=0;
-		IdProfesionalcorrecta=0;
 		fread(&reg3,sizeof(Turnos),1,arch3);
 		
-		while(!feof(arch3))
-		{
-			if(IdProfesional==reg3.IdProfesional)	
-			{
-			  	IdProfesionalcorrecta=1;
-			}
-			fread(&reg3,sizeof(Turnos),1,arch3);
-		}
-		  
 		if(IdProfesionalcorrecta==1)
 		{
-	  		rewind(arch3);
-			fread(&reg3,sizeof(Turnos),1,arch3);
+	  		
 	        while(!feof(arch3))
 	        {  
-	            if(reg3.fueatendido==2 && reg3.IdProfesional==IdProfesional && Dia==reg3.fecha.dia && Mes==reg3.fecha.mes && Anio==reg3.fecha.anio)
+	            if(reg3.fueatendido==1 && reg3.IdProfesional==IdProfesional && Dia==reg3.fecha.dia && Mes==reg3.fecha.mes && Anio==reg3.fecha.anio)
 	            {
 			        rewind(arch4);
 			        fread(&reg4,sizeof(Cliente),1,arch4);
@@ -340,7 +320,7 @@ void RegistroEvolucionCliente(int bandera)
 						printf("\nCliente: ");
 						puts(reg4.NombreCliente);
 						printf("\nPeso: %.2f Kg",reg4.Peso);
-						printf("\nEdad: %d anios",reg3.edadCliente);
+						printf("\nEdad: %d anios",2022-reg3.fecha.anio);
 						printf("\nDNI Cliente: %d",reg4.DNI_Cliente);
 						do 
 						{
@@ -381,7 +361,6 @@ void RegistroEvolucionCliente(int bandera)
 					{   
 						if(reg4.DNI_Cliente==dniCliente && reg3.fueatendido==2 && evolucionguardada==0);
 						{
-							reg3.edadCliente=reg3.fecha.anio-reg4.fechanacimiento.anio;
 							reg3.fueatendido=1;
 							strcpy(reg3.DetalleAtencion,DetalleEvolucion);
 							int pos=ftell(arch3)-sizeof(Turnos);
