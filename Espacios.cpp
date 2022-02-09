@@ -5,9 +5,9 @@
 
 struct Fecha
 {
-  int dia;
+  int anio;
   int mes;
-  int anio;	
+  int dia;	
 };
 
 struct Profesionales
@@ -22,20 +22,18 @@ struct Cliente
 {
 	char NombreCliente [60];
 	char Domicilio [60];
-	int DNI_Cliente;
 	char localidad[60];
+	char Telefono[25];
+	int DNI_Cliente;
 	Fecha fechanacimiento;
 	float Peso;
-	int Telefono;
 };
 
 struct Turnos
 {
-	int IdProfesional;
+	int IdProfesional,dniCliente,fueatendido;//-1) si -2) no
 	Fecha fecha;
-	int dniCliente;
-	char DetalleAtencion[380];
-	int fueatendido; //-1) si -2) no
+	char DetalleAtencion[380]; 
 };
 
 struct CuentasDeUsuarios
@@ -45,7 +43,7 @@ struct CuentasDeUsuarios
 	char ApellidoNombre[60];
 };
 
-void RegistroEvolucionCliente(int bandera);
+void RegistroEvolucionCliente(int bandera,int &ID);
 void Listadeespera(int bandera,int &ID);
 void InicioDeSesion(int &bandera,int &ID);
 int menu();
@@ -63,7 +61,7 @@ main()
 			case 2: Listadeespera(bandera,ID);
 			break;
 			
-			case 3: RegistroEvolucionCliente(bandera);
+			case 3: RegistroEvolucionCliente(bandera,ID);
 			break;
 			
 			case 4: printf("***FIN DEL PROGRAMA***\n\n");
@@ -155,6 +153,7 @@ void InicioDeSesion(int &bandera,int &ID)
 		}
 		
 	}
+	fclose(arch2);
 	system("pause");
 	
 }
@@ -164,76 +163,45 @@ void Listadeespera(int bandera,int &ID)
 	system("cls");
 	 
 	//----------------Declaracion de las variables--------------------------------------///	
-	FILE *arch4, *arch3; Cliente reg4; Turnos reg3; int IdProfesional, IdProfesionalcorrecta, Dia, Mes, Anio, hayturnos;
+	FILE *arch; 
+	Turnos reg; 
+	int IdProfesional, IdProfesionalcorrecta, Dia, Mes, Anio, hayturnos=0;
 	
 	///--------------------------------Apertura de Archivos -----------------------------------///	
-	arch4=fopen("Clientes.dat","rb");
-	arch3=fopen("Turnos.dat","rb");
+	arch=fopen("Turnos.dat","rb");
 	
 	//--------------------------------Verificacion de Archivos--------------------------------------///	
-	if(arch3==NULL || arch4==NULL)
+	if(arch==NULL)
 	{
-		printf("\nError en el programa, Archivos no cargados");
+		printf("\nError en el programa, Archivos no cargados\n\n");
+		goto salida;
 	}
 	//--------------------------------Control de inicio de sesion--------------------------------------///	
 	if(bandera==0)
 	{
-	 printf("\nNo ha iniciado sesion");
-	 system("pause");
-	printf("  \n                                                                    ");
-	printf("\n                                                                   ");
-	}
-	else
-	{//--------------------------------Solicitud de los datos--------------------------------------	
+	 printf("\nNo ha iniciado sesion\n\n");
+	                                                             
+	}else{
+///--------------------------------Impresion de lista de espera--------------------------------------///	
+		fread(&reg,sizeof(Turnos),1,arch);
 	
-		
-		printf("  \n");
-		printf("\nIngrese la fecha del turno: ");	
-		printf("\nDia: ");
-			scanf("%d",&Dia);
-		printf("\nMes: ");
-			scanf("%d",&Mes);
-		printf("\nAnio: ");
-			scanf("%d",&Anio);
-		 
-		//--------------------------------Verificacion de los datos en los archivos--------------------------------------///	
-		hayturnos=0;
-		fread(&reg3,sizeof(Turnos),1,arch3);
-		
-		if(IdProfesionalcorrecta==1)
-		{
-	  		
-	        while(!feof(arch3))
-	        {  
-	            if(reg3.fueatendido==1 && reg3.IdProfesional==IdProfesional && Dia==reg3.fecha.dia && Mes==reg3.fecha.mes && Anio==reg3.fecha.anio)
-	            {
-			        rewind(arch4);
-			        fread(&reg4,sizeof(Cliente),1,arch4);
-			        
-			        while(!feof(arch4))
-			        {    ///--------------------------------Impresion de lista de espera--------------------------------------///	
-			            printf("\nEn espera: ");
-				        if(reg4.DNI_Cliente=reg3.dniCliente)
-		    		    {
-			    		   	hayturnos=1;
-						    printf("\nCliente: ");
-						    puts(reg4.NombreCliente);
-						    printf("\nFecha de turno: ");
-						    printf("\nDia: %d",reg3.fecha.dia);
-						    printf("\nMes: %d", reg3.fecha.mes);
-						    printf("\nAnio: %d",reg3.fecha.anio);
-						    printf("\nDNI: %d",reg3.dniCliente);
-						    system("pause");
-						    printf("                                      ");
-				        }
-		 	          fread(&reg4,sizeof(Cliente),1,arch4);	
-			        }
-	            }
-		        fread(&reg3,sizeof(Turnos),1,arch3);	
-	        }
-		}
-		else{
-		printf("\nID incorrecta, Vuelva a intentarlo");}
+		while(!feof(arch)){
+		  
+	        if( reg.IdProfesional==ID)
+            {  
+            	hayturnos=1;
+            	if(reg.fueatendido==2){
+            		
+					printf("\nEn espera:\nDNI: %d\nFecha: %d / %d / %d \nHistorial: %s\n\n",reg.dniCliente,reg.fecha.dia,reg.fecha.mes,reg.fecha.anio,reg.DetalleAtencion);
+					
+				}else{
+            		printf("\nYa atendido:\nDNI: %d\nFecha: %d / %d / %d \nHistorial: %s\n\n",reg.dniCliente,reg.fecha.dia,reg.fecha.mes,reg.fecha.anio,reg.DetalleAtencion);
+            		
+            	}     
+		 	          
+		    }
+		    fread(&reg,sizeof(Turnos),1,arch);
+	   }
 		
 		if(hayturnos==0)
 		{
@@ -241,24 +209,29 @@ void Listadeespera(int bandera,int &ID)
 		system("pause");
 		}
   	     
-		fclose(arch3); fclose(arch4);
+		fclose(arch);
 		
     }
+    
+    salida:
 	system("pause");
 }
 
-void RegistroEvolucionCliente(int bandera)
+void RegistroEvolucionCliente(int bandera,int &ID)
 {
 	system("cls");
-	FILE *arch4, *arch3;Cliente reg4; Turnos reg3;
-	int Clienteencontrada=0, tamanoevolucion, evolucionregistrada,dniCliente,IdProfesional, IdProfesionalcorrecta, evolucionguardada, no=2, si=1;
-	char nombreCliente[32], DetalleEvolucion[380]; bool atencion;
+	FILE *archCLI, *archTUR;
+	Cliente regcli; 
+	Turnos regtur;
+	int cont;
+	int Clienteencontrada=0, tamanoevolucion, evolucionregistrada,dniCliente, evolucionguardada=0;
+	char  DetalleEvolucion[380]; bool atencion;
 	
-	arch4=fopen("Clientes.dat","r+b");
-	arch3=fopen("Turnos.dat","r+b");
+	archCLI=fopen("Clientes.dat","r+b");
+	archTUR=fopen("Turnos.dat","r+b");
 	
 	//Verificar archivos correctos-----
-	if(arch4==NULL|| arch3==NULL)
+	if(archCLI==NULL or archTUR==NULL)
 	{
 	printf("\nError en el sistema-Archivos no cargados");
 	}	
@@ -269,129 +242,89 @@ void RegistroEvolucionCliente(int bandera)
 		printf("\nNo ha iniciado sesion");
 		system("pause");
 	}
-	//Verificar IdProfesional----
 	else
 	{
-	printf("\nIngrese su ID: "); 
-	scanf("%d",&IdProfesional);
-		do
-		{
-			IdProfesionalcorrecta=0;
-			fread(&reg3,sizeof(Turnos),1,arch3);
-			rewind(arch3);
-			
-			while(!feof(arch3))
-			{
-				if(reg3.IdProfesional==IdProfesional)
-				{
-					IdProfesionalcorrecta=1;
-				}
-				fread(&reg3,sizeof(Turnos),1,arch3);
-			}
-			
-			if(IdProfesionalcorrecta==0)
-			{
-				printf("\nEl numero de la ID no esta en el sistema- Vuelva a intentarlo");
-				printf(" \n                                                                   ");
-			}
-			
-	    }while(IdProfesionalcorrecta==0);
-	    
-		 printf("\nIngrese el DNI del Cliente: "); scanf("%d",&dniCliente);
+	
+		printf("\nIngrese el DNI del Cliente: "); 
+		scanf("%d",&dniCliente);
 		
 		//Registrar evolucion----		
 		evolucionregistrada=0;
-		rewind(arch3);
 		
-		fread(&reg3,sizeof(Turnos),1,arch3);
+		fread(&regtur,sizeof(Turnos),1,archTUR);
 		
-		while(!feof(arch3)&&evolucionregistrada==0)
+		while(!feof(archTUR) and evolucionregistrada==0)
 		{
-			if(dniCliente==reg3.dniCliente && reg3.fueatendido==2&&reg3.IdProfesional==IdProfesional)
+			if(dniCliente==regtur.dniCliente and regtur.fueatendido==2)
 			{
-				fread(&reg4,sizeof(Cliente),1,arch4);
-				while(!feof(arch4)&&evolucionregistrada==0)
+				fread(&regcli,sizeof(Cliente),1,archCLI);
+				while(!feof(archCLI) and evolucionregistrada==0)
 				{
-				 	if(reg4.DNI_Cliente==dniCliente)
+				 	if(dniCliente==regcli.DNI_Cliente)
 					{
 						Clienteencontrada=1;
-						printf("                                                                                ");
-						printf("                                                                                ");
+						printf("\n----------------------------------------------------------------------");
 						printf("\nCliente: ");
-						puts(reg4.NombreCliente);
-						printf("\nPeso: %.2f Kg",reg4.Peso);
-						printf("\nEdad: %d anios",2022-reg3.fecha.anio);
-						printf("\nDNI Cliente: %d",reg4.DNI_Cliente);
+						puts(regcli.NombreCliente);
+						printf("\nPeso: %.2f Kg",regcli.Peso);
+						printf("\nEdad: %d anios",2022-(regcli.fechanacimiento.anio));
+						printf("\nDNI Cliente: %d",regcli.DNI_Cliente);
 						do 
 						{
-							printf("\nIngrese la evolucion de la Cliente en no mas de 380 letras:");
-							_flushall(); gets(DetalleEvolucion);   // (reg3.DetalleAtencion); 
+							printf("\n\nIngrese la evolucion de la Cliente en no mas de 380 letras:");
+							_flushall();
+							gets(DetalleEvolucion);   // (reg3.DetalleAtencion); 
 							tamanoevolucion=strlen(DetalleEvolucion);//(reg3.DetalleAtencion);
-							if(tamanoevolucion>380) //(tamanoevolucion>380)
+							if(tamanoevolucion>380 or tamanoevolucion<5) //(tamanoevolucion>380)
 							{
-								printf("                                                                     ");
+								printf("Debe escribir su evolucion de manera adecuada\n");
 							}
 						}while(tamanoevolucion>380||tamanoevolucion<5);
-						printf("\nIngrese su ID para finalizar: ");
-						 printf("\nID: "); scanf("%d",&IdProfesional);//("%d",reg3.IdProfesional);
 						
-						evolucionregistrada=1;
-						break;	
-					 }
-			      fread(&reg4,sizeof(Cliente),1,arch4);
+		
+						evolucionregistrada=1;	
+					}
+			      fread(&regcli,sizeof(Cliente),1,archCLI);
 				}
 			
 		    }
-			fread(&reg3,sizeof(Turnos),1,arch3);		  
+			fread(&regtur,sizeof(Turnos),1,archTUR);		  
 	    }
-    
-		if(evolucionregistrada==1)
-		{
-		system("pause");
-			//Guardar evolucion-----	 
-			evolucionguardada=0;
-			rewind(arch3); rewind(arch4);	
-			fread(&reg3,sizeof(Turnos),1,arch3);
-			while(!feof(arch3)&&evolucionguardada==0)
-			{
-				if(reg3.fueatendido==2 && reg3.dniCliente==dniCliente&&reg3.IdProfesional==IdProfesional)
-				{   
-					fread(&reg4,sizeof(Cliente),1,arch4);
-					while(!feof(arch4)&&evolucionguardada==0)
-					{   
-						if(reg4.DNI_Cliente==dniCliente && reg3.fueatendido==2 && evolucionguardada==0);
-						{
-							reg3.fueatendido=1;
-							strcpy(reg3.DetalleAtencion,DetalleEvolucion);
-							int pos=ftell(arch3)-sizeof(Turnos);
-							fseek(arch3,pos,SEEK_SET);
-							fwrite(&reg3,sizeof(Turnos),1,arch3);
-							printf("\nSe ha guardado la evolucion correctamente ");
-							evolucionguardada=1;
-							break;
-						}
-						fread(&reg4,sizeof(Cliente),1,arch4);
-					}
+    	fclose(archCLI);
+    	rewind(archTUR);
+    	
+    	//Guardar evolucion-----	
+    	
+		if(Clienteencontrada==1){
+			cont=0;
+			do{	
+				fread(&regtur,sizeof(Turnos),1,archCLI);
+				if(regtur.IdProfesional==ID){
+				regtur.fueatendido=1;
+				strcat(regtur.DetalleAtencion," / ");
+				strcat(regtur.DetalleAtencion,DetalleEvolucion);
+				fseek(archTUR,cont*sizeof(Turnos),SEEK_SET);
+				fwrite(&regtur,sizeof(Turnos),1,archTUR);
+				
+				evolucionguardada=1;
+				
 				}
-				if(evolucionguardada==1)
-				{
-					break;
-				}
-				else
-				{
-					fread(&reg3,sizeof(Turnos),1,arch3);  
-				}
-			}
+				cont++;
+			}while(regtur.IdProfesional!=ID);
+			
+		}else{
+		
+			printf("\nEl dni ingresado no esta registrado en sistema");
 		}
 		
-		fclose(arch4); fclose(arch3);
-		
-		if(evolucionregistrada==0)
-		{
-		printf("\nEl dni ingresado no esta registrado en sistema");
+		if(evolucionguardada=1){
+			printf("\n---datos cargados correctamente---\n");
 		}
+		fclose(archTUR);
+		
     }
 	system("pause");
+    system("cls");
 }
 
 
