@@ -4,10 +4,10 @@
 #include<Windows.h>
 struct Fecha{
     int Anio,Mes,Dia;
-}
+};
 
 struct Usuarios{
-    char Usuario [11], Contrasenia [32], ApellidoyNombre[60];
+    char Usuario[11], Contrasenia[32], ApellidoyNombre[60];
 };
 
 struct Cliente{
@@ -28,7 +28,7 @@ void IniciarSesion(){
     Usuarios Base;
     bool Validador = true;
     int ContadorDeFallos = 0,Segundos, Veces = 1, Exit;
-    char UsuarioBase[10], ContraseniaBase[10];
+    char UsuarioBase[11], ContraseniaBase[32];
 
 //------------------------------------------Ingreso de Datos------------------------------------------------//
     Ingreso:
@@ -42,7 +42,7 @@ void IniciarSesion(){
     fflush(stdin);
 
 //----------------------------------------Verificacion de existencia de Archivo  -------------------//
-    FILE *Puntero = fopen ("Clientes.dat","rb");
+    FILE *Puntero = fopen ("Usuarios.dat","rb");
     if (Puntero == NULL){
         printf("No existe el archivo base, por favor creelo antes de entrar\n");
         goto Salida;
@@ -228,7 +228,7 @@ void ListadoDeEvoluciones(){
     //-----------------------------------Verificacion de evolucion del cliente------------------------//
     while (!feof(Puntero)){
         fread (&Base,sizeof(Turno),1,Puntero);
-        if (Buscador == Base.IdProfesional && Base.Atendido == 1 && Base.DiaFecha == DiaBuscar && Base.MesFecha == MesBuscar && Base.AnioFecha == AnioBuscar){        
+        if (Buscador == Base.IdProfesional && Base.Atendido == 1 && Base.FechaTurno.Dia == DiaBuscar && Base.FechaTurno.Mes == MesBuscar && Base.FechaTurno.Anio == AnioBuscar){        
             fwrite(&Base,sizeof(Turno),1,Auxiliar);
             j++;
         }
