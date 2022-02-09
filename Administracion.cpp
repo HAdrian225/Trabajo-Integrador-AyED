@@ -26,12 +26,14 @@ main(){
 				case 2: p=fopen("Usuarios.dat","rb");
 						if(p==NULL){
 							printf("Es el primer usuario a registrar\n");
+							fclose(p);
 						}else{
 							transferir(p,nomuser,i);
                         	fclose(p);
                         	printf("Cantidad de usuarios registrados: %d\n",i);
                         	
                         }
+                        
                         p=fopen("Usuarios.dat","a+b");
                         transferir(p,nomuser,i);
 						registrar2(p,nomuser,i);
@@ -67,7 +69,11 @@ main(){
                         break;
             	
                 case 5: break;
-                        
+            	
+            	default: printf("\n\tEl valor ingresado es invalido\n");
+            			system("pause");
+            			system("cls");
+            			break;
         }  
 
     }while(x!=5);

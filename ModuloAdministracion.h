@@ -232,7 +232,7 @@ void mostrarAtenciones(FILE *p,FILE *q){
 			}
 		}
 	
-		printf("\nProfesional %d: %d pacientes atendidos\n",id,cant);
+		printf("\nProfesional %d: %d pacientes atendidos\n\n",id,cant);
 		
 		rewind(p);
 		cant=0;
@@ -301,7 +301,7 @@ void rankingProf(FILE *p,FILE *q){
 	//imprime array en pantalla
 	printf("\nRanking:\n\t");
 	for(int j=0;j<n;j++){
-		printf("%d.Nombre y apellido: %s\n\tID: %d\n\tCantidad de pacientes atendidos: %d\n",j,profeNum[j].name,profeNum[j].id,profeNum[j].cant);
+		printf("%d.Nombre y apellido: %s\n\tID: %d\n\tCantidad de pacientes atendidos: %d\n\n",j+1,profeNum[j].name,profeNum[j].id,profeNum[j].cant);
 		
 	}
 	
