@@ -168,16 +168,16 @@ void RegistrarTurno(){
     scanf("%d",&Base.IdProfesional);
     fflush(stdin);
 
-    printf("Ingerese el anio de nacimiento del cliente: ");
-    scanf("%d",&Base.FechaTurno.Anio);
+    printf("Ingerese la fecha del turno\nDia: ");
+    scanf("%d",&Base.FechaTurno.Dia);
     fflush(stdin);
 
-    printf("Ingerese el mes de nacimiento del cliente: ");
+    printf("Mes: ");
     scanf("%d",&Base.FechaTurno.Mes);
     fflush(stdin);
 
-    printf("Ingerese el dia de nacimiento del cliente: ");
-    scanf("%d",&Base.FechaTurno.Dia);
+    printf("Anio: ");
+    scanf("%d",&Base.FechaTurno.Anio);
     fflush(stdin);
 
     printf("Ingerese el DNI del cliente: ");
@@ -235,14 +235,14 @@ void ListadoDeEvoluciones(){
     }
 
     if (j!= 0){
+        rewind (Auxiliar);
         fread(&Base,sizeof(Turno),1,Auxiliar);
         printf("El profesional %d tiene %d pacientes atendidos y sus evoluciones son: \n",Base.IdProfesional,j);
         printf("DNI Paciente: %d\nSu detalle de atencion es: ",Base.DNICliente);
         puts(Base.DetalledeAtencion);
         for (int i = 1; i < j; i++){
             fread(&Base,sizeof(Turno),1,Auxiliar);
-            printf("DNI Paciente: %d\nSu detalle de atencion es: ",Base.DNICliente);
-            puts(Base.DetalledeAtencion);
+            printf("DNI Paciente: %d\nSu detalle de atencion es: %s",Base.DNICliente,Base.DetalledeAtencion);
         }
         printf("\n");
         system("pause");
