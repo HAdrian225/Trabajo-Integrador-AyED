@@ -7,3 +7,4 @@ Se adapta la codificaion para poder compartir los archivos como se debe, permiti
 Se termina la codificaion del espacio Recepcion, aun falta probar las interacciones con los demas espacios gracias a la base de datos 5/2/2022
 Se Modifica la Recepcion para la adaptacion del archivo para su uso comun, agregando un struct FECHA 7/2/2022
 Se prueban los modulos y se corrigen errores 9/2/2022
+Se generan los ultimos cambios para que la funcion 4 del la Recepcion pueda funcionar como es debido 10/2/2022 
